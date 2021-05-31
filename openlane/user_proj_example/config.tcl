@@ -19,6 +19,10 @@ set ::env(DESIGN_NAME) user_proj_example
 
 set ::env(VERILOG_FILES) "\
 	$script_dir/../../caravel/verilog/rtl/defines.v \
+        $script_dir/../../verilog/rtl/pid/16x16bit_multiplier_pipelined.v \
+        $script_dir/../../verilog/rtl/pid/booth.v \
+        $script_dir/../../verilog/rtl/pid/CLA_fixed.v \
+        $script_dir/../../verilog/rtl/pid/PID.v \
 	$script_dir/../../verilog/rtl/user_proj_example.v"
 
 set ::env(CLOCK_PORT) ""
