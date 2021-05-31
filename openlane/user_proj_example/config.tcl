@@ -23,10 +23,14 @@ set ::env(VERILOG_FILES) "\
         $script_dir/../../verilog/rtl/pid/booth.v \
         $script_dir/../../verilog/rtl/pid/CLA_fixed.v \
         $script_dir/../../verilog/rtl/pid/PID.v \
+        $script_dir/../../verilog/rtl/pwm/PWM.v \
+        $script_dir/../../verilog/rtl/pwm/down_clocking_even.v \
+        $script_dir/../../verilog/rtl/pwm/down_clocking_odd.v \
+        $script_dir/../../verilog/rtl/pwm/minus_one.v \
 	$script_dir/../../verilog/rtl/user_proj_example.v"
 
 set ::env(CLOCK_PORT) ""
-set ::env(CLOCK_NET) "counter.clk"
+set ::env(CLOCK_NET) "wb_clk_i"
 set ::env(CLOCK_PERIOD) "10"
 
 set ::env(FP_SIZING) absolute
