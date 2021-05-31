@@ -102,10 +102,10 @@ module user_proj_example #(
 
 
     // IO
-    //assign io_out = {33'b0,pwm_out2,pwm_out1,led3,led2,led1};
-    //assign io_oeb = {33'b0,5'b11111};
-    assign io_out = {35'b0,led3,led2,led1};
-    assign io_oeb = {35'b0,3'b111};
+    assign io_out = {33'b0,pwm_out2,pwm_out1,led3,led2,led1};
+    assign io_oeb = {33'b0,5'b11111};
+    //assign io_out = {35'b0,led3,led2,led1};
+    //assign io_oeb = {35'b0,3'b111};
 
     // IRQ
     assign irq = 3'b000;	// Unused
@@ -140,11 +140,11 @@ module user_proj_example #(
 
    // Slave Acknowledge Response 
    always @(posedge clk)
-	   //wbs_ack_o <= (pwm1_wbs_ack_o || pwm2_wbs_ack_o || pid_wbs_ack_o) ;
-	   wbs_ack_o <=  pid_wbs_ack_o ;
+	   wbs_ack_o <= (pwm1_wbs_ack_o || pwm2_wbs_ack_o || pid_wbs_ack_o) ;
+	   //wbs_ack_o <=  pid_wbs_ack_o ;
 
    // Slave Return Data
- /*  always @(posedge clk)
+   always @(posedge clk)
 	   if (pwm1_wbs_ack_o)
 		   wbs_dat_o <= {16'h0,pwm1_wbs_dat_o} ;
 	   else if (pwm2_wbs_ack_o)
@@ -153,15 +153,16 @@ module user_proj_example #(
 		   wbs_dat_o <= pid_wbs_dat_o ;
 	   else
 		   wbs_dat_o <= 32'h0 ;
-*/
 
+/*
    always @(posedge clk)
 	   if (pid_wbs_ack_o)
 		   wbs_dat_o <= pid_wbs_dat_o ;
 	   else
 		   wbs_dat_o <= 32'h0 ;
+*/
 
-/*	   
+	   
    // PWM1 Module instantiations 
    PWM pwm1 (
 	   .i_wb_clk (clk),
@@ -177,7 +178,7 @@ module user_proj_example #(
 	   .i_valid_DC (1'b0),
 	   .o_pwm (pwm_out1)
    ); 
-
+/*
    // PWM2 Module instantiations 
    PWM pwm2 (
 	   .i_wb_clk (clk),
@@ -193,7 +194,7 @@ module user_proj_example #(
 	   .i_valid_DC (1'b0),
 	   .o_pwm (pwm_out2)
    );
-*/
+
   PID pid (
 	  .i_clk (clk),
 	  .i_rst (rst),
@@ -207,6 +208,6 @@ module user_proj_example #(
 	  .o_un (),
 	  .o_valid ()
   ); 
-
+*/
 endmodule
 `default_nettype wire
