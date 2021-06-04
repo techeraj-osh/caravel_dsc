@@ -98,17 +98,26 @@ module user_proj_example #(
     reg [31:0] pid_wbs_dat_o  ;
 
     wire pwm_out1 , pwm_out2 ;
+    wire pwm_out1_oen , pwm_out2_oen ;
+    wire ptc1_intr , ptc2_intr ;
     reg led1, led2, led3 ; 
+    wire ptc_clk1,ptc_clk2;
+    wire capt_in1,capt_in1;
 
 
-    // IO
+    // Outputs
     assign io_out = {33'b0,pwm_out2,pwm_out1,led3,led2,led1};
-    assign io_oeb = {33'b0,5'b11111};
+    assign io_oeb = {33'b0,pwm_out2_oen,pwm_out1_oen,3'b111};
     //assign io_out = {35'b0,led3,led2,led1};
     //assign io_oeb = {35'b0,3'b111};
+    // Inputs
+    assign ptc_clk1 = io_in[0] ;
+    assign ptc_clk2 = io_in[1] ;
+    assign capt_in1 = io_in[2] ;
+    assign capt_in2 = io_in[3] ;
 
     // IRQ
-    assign irq = 3'b000;	// Unused
+    assign irq = {1'b0,ptc2_intr,ptc1_intr};	// Unused
 
     // LA
     //assign la_data_out = {{(127-BITS){1'b0}}, count};
@@ -146,55 +155,58 @@ module user_proj_example #(
    // Slave Return Data
    always @(posedge clk)
 	   if (pwm1_wbs_ack_o)
-		   wbs_dat_o <= {16'h0,pwm1_wbs_dat_o} ;
+		   wbs_dat_o <= {pwm1_wbs_dat_o} ;
 	   else if (pwm2_wbs_ack_o)
-		   wbs_dat_o <= {16'h0,pwm2_wbs_dat_o} ;
+		   wbs_dat_o <= {pwm2_wbs_dat_o} ;
 	   else if (pid_wbs_ack_o)
 		   wbs_dat_o <= pid_wbs_dat_o ;
 	   else
 		   wbs_dat_o <= 32'h0 ;
 
-/*
-   always @(posedge clk)
-	   if (pid_wbs_ack_o)
-		   wbs_dat_o <= pid_wbs_dat_o ;
-	   else
-		   wbs_dat_o <= 32'h0 ;
-*/
 
 	   
-   // PWM1 Module instantiations 
-   PWM pwm1 (
-	   .i_wb_clk (clk),
-	   .i_wb_rst (rst),
-	   .i_wb_cyc (wbs_cyc_i),
-	   .i_wb_stb (pwm1_wbs_stb_i),
-	   .i_wb_we  (wbs_we_i),
-	   .i_wb_adr ({8'h0,wbs_adr_i[7:0]}), // 16-bit address
-	   .i_wb_data (wbs_dat_i[15:0]),
-	   .o_wb_data (pwm1_wbs_dat_o),
-	   .o_wb_ack (pwm1_wbs_ack_o),
-	   .i_DC (16'h0),
-	   .i_valid_DC (1'b0),
-	   .o_pwm (pwm_out1)
+   // PTC1 Module instantiations 
+   ptc_top ptc1_i (
+	   .wb_clk_i (clk),
+	   .wb_rst_i (rst),
+	   .wb_cyc_i (wbs_cyc_i),
+	   .wb_adr_i ({8'h0,wbs_adr_i[7:0]}), // 16-bit address
+	   .wb_dat_i (wbs_dat_i),    
+	   .wb_sel_i (wbs_sel_i),
+	   .wb_we_i  (wbs_we_i),
+	   .wb_stb_i (pwm1_wbs_stb_i),
+	   .wb_dat_o (pwm1_wbs_dat_o),
+	   .wb_ack_o (pwm1_wbs_ack_o),
+	   .wb_err_o ( ),
+	   .wb_inta_o (ptc1_intr),
+	   .gate_clk_pad_i (ptc_clk1),
+	   .capt_pad_i (capt_in1),
+	   .pwm_pad_o (pwm_out1), 
+	   .oen_padoen_o (pwm_out1_oen)
    ); 
-/*
-   // PWM2 Module instantiations 
-   PWM pwm2 (
-	   .i_wb_clk (clk),
-	   .i_wb_rst (rst),
-	   .i_wb_cyc (wbs_cyc_i),
-	   .i_wb_stb (pwm2_wbs_stb_i),
-	   .i_wb_we  (wbs_we_i),
-	   .i_wb_adr ({8'h0,wbs_adr_i[7:0]}), // 16-bit address
-	   .i_wb_data (wbs_dat_i[15:0]),
-	   .o_wb_data (pwm2_wbs_dat_o),
-	   .o_wb_ack (pwm2_wbs_ack_o),
-	   .i_DC (16'h0),
-	   .i_valid_DC (1'b0),
-	   .o_pwm (pwm_out2)
+
+   // PTC2 Module instantiations 
+
+ ptc_top ptc2_i (
+	   .wb_clk_i (clk),
+	   .wb_rst_i (rst),
+	   .wb_cyc_i (wbs_cyc_i),
+	   .wb_adr_i ({8'h0,wbs_adr_i[7:0]}), // 16-bit address
+	   .wb_dat_i (wbs_dat_i),    
+	   .wb_sel_i (wbs_sel_i),
+	   .wb_we_i  (wbs_we_i),
+	   .wb_stb_i (pwm2_wbs_stb_i),
+	   .wb_dat_o (pwm2_wbs_dat_o),
+	   .wb_ack_o (pwm2_wbs_ack_o),
+	   .wb_err_o ( ),
+	   .wb_inta_o (ptc1_intr),
+	   .gate_clk_pad_i (ptc_clk2),
+	   .capt_pad_i (capt_in2),
+	   .pwm_pad_o (pwm_out2), 
+	   .oen_padoen_o (pwm_out2_oen)
    );
 
+/*
   PID pid (
 	  .i_clk (clk),
 	  .i_rst (rst),
