@@ -303,7 +303,7 @@ assign rptc_cntr = `DEF_RPTC_CNTR;
 // Read PTC registers
 //
 always @(wb_adr_i or rptc_hrc or rptc_lrc or rptc_ctrl or rptc_cntr)
-	case (wb_adr_i[`PTC_OFS_BITS])	// synopsys full_case parallel_case
+	case (wb_adr_i[`PTC_OFS_BITS])	
 `ifdef PTC_READREGS
 		`PTC_RPTC_HRC: wb_dat_o[dw-1:0] = {{dw-cw{1'b0}}, rptc_hrc};
 		`PTC_RPTC_LRC: wb_dat_o[dw-1:0] = {{dw-cw{1'b0}}, rptc_lrc};
