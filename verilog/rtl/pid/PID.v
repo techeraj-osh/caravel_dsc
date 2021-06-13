@@ -32,6 +32,7 @@ of[4]==1	:	sigma overflow
 
 
 */
+//// SPDX-License-Identifier: LGPL-2.1-or-later                  ////
 
 `define	wb_32bit
 

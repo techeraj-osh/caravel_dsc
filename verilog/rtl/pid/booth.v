@@ -2,6 +2,7 @@
 Author: Zhu Xu
 Email: m99a1@yahoo.cn
 */
+//// SPDX-License-Identifier: LGPL-2.1-or-later                  ////
 module booth_radix4(
 input	[2:0]codes,
 output	zero,

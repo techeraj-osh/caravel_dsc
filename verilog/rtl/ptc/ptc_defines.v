@@ -39,6 +39,7 @@
 //// Public License along with this source; if not, download it   ////
 //// from http://www.opencores.org/lgpl.shtml                     ////
 ////                                                              ////
+//// SPDX-License-Identifier: LGPL-2.1-or-later                   ////
 //////////////////////////////////////////////////////////////////////
 //
 // CVS Revision History

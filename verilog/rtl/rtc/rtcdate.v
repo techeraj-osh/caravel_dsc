@@ -48,7 +48,7 @@
 // License:	GPL, v3, as defined and found on www.gnu.org,
 //		http://www.gnu.org/licenses/gpl.html
 //
-//
+//// SPDX-License-Identifier: GPL-3.0-or-later 
 ///////////////////////////////////////////////////////////////////////////
 module rtcdate(i_clk, i_ppd, i_wb_cyc, i_wb_stb, i_wb_we, i_wb_data,
 		o_wb_ack, o_wb_stall, o_wb_data);

@@ -38,7 +38,7 @@
 // License:	GPL, v3, as defined and found on www.gnu.org,
 //		http://www.gnu.org/licenses/gpl.html
 //
-//
+//// SPDX-License-Identifier: GPL-3.0-or-later 
 ///////////////////////////////////////////////////////////////////////////
 module	rtclight(i_clk, 
 		// Wishbone interface
