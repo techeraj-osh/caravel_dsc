@@ -150,7 +150,8 @@ module i2c_master_top(
 	wire rst_i = arst_i ^ ARST_LVL;
 
 	// generate wishbone signals
-	wire wb_wacc = wb_we_i & wb_ack_o;
+	//wire wb_wacc = wb_we_i & wb_ack_o;
+	wire wb_wacc = wb_we_i & wb_stb_i & wb_cyc_i ;
 
 	// generate acknowledge output signal
 	always @(posedge wb_clk_i)

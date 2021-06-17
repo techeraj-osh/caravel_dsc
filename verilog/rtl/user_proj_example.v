@@ -12,6 +12,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 `default_nettype none
+
 /*
  *-------------------------------------------------------------
  *
@@ -74,11 +75,9 @@ module user_proj_example #(
 );
     wire clk;
     wire rst;
-
     wire [`MPRJ_IO_PADS-1:0] io_in;
     wire [`MPRJ_IO_PADS-1:0] io_out;
     wire [`MPRJ_IO_PADS-1:0] io_oeb;
-
     wire [31:0] rdata; 
     wire [31:0] wdata;
     wire [BITS-1:0] count;
@@ -91,19 +90,19 @@ module user_proj_example #(
     wire pwm1_wbs_stb_i , pwm2_wbs_stb_i , i2c_wbs_stb_i , rtc_wbs_stb_i , pid_wbs_stb_i ;
     wire pwm1_wbs_ack_o , pwm2_wbs_ack_o , i2c_wbs_ack_o , rtc_wbs_ack_o , pid_wbs_ack_o ; 
 
-    reg [15:0] pwm1_wbs_dat_o ;
-    reg [15:0] pwm2_wbs_dat_o ;
-    reg [7:0] i2c_wbs_dat_o ;
-    reg [31:0] rtc_wbs_dat_o ;
-    reg [31:0] pid_wbs_dat_o  ;
+    wire [31:0] pwm1_wbs_dat_o ;
+    wire [31:0] pwm2_wbs_dat_o ;
+    wire [7:0] i2c_wbs_dat_o ;
+    wire [31:0] rtc_wbs_dat_o ;
+    wire [31:0] pid_wbs_dat_o  ;
 
     wire pwm_out1 , pwm_out2 ;
     wire pwm_out1_oen , pwm_out2_oen ;
     wire ptc1_intr , ptc2_intr , i2c_intr , rtc_intr ;
     reg led1, led2, led3 ; 
     wire ptc_clk1,ptc_clk2;
-    wire capt_in1,capt_in1;
-
+    wire capt_in1,capt_in2;
+    wire i2c_scl_in, i2c_sda_in, scl_pad_o, scl_padoen_o, sda_pad_o, sda_padoen_o ; 
 
     assign ptc_clk1 = io_in[0] ;                           // IO[0]
     assign io_oeb[0]= 1'b1;
@@ -216,7 +215,7 @@ module user_proj_example #(
 	   .wb_dat_o (pwm2_wbs_dat_o),
 	   .wb_ack_o (pwm2_wbs_ack_o),
 	   .wb_err_o ( ),
-	   .wb_inta_o (ptc1_intr),
+	   .wb_inta_o (ptc2_intr),
 	   .gate_clk_pad_i (ptc_clk2),
 	   .capt_pad_i (capt_in2),
 	   .pwm_pad_o (pwm_out2), 
@@ -228,11 +227,11 @@ module user_proj_example #(
 	   .wb_clk_i (clk),
 	   .wb_rst_i (rst),
 	   .arst_i   (1'b1),
-	   .wb_adr_i (wbs_adr_i[2:0]), // 3-bit address
+	   .wb_adr_i (wbs_adr_i[4:2]), // 3-bit address
 	   .wb_dat_i (wbs_dat_i[7:0]), // 8-bit data    
 	   .wb_dat_o (i2c_wbs_dat_o),  // 8-bit data
 	   .wb_we_i  (wbs_we_i),
-	   .wb_stb_i (rtc_wbs_stb_i),
+	   .wb_stb_i (i2c_wbs_stb_i ),
 	   .wb_cyc_i (wbs_cyc_i),
 	   .wb_ack_o (i2c_wbs_ack_o),
 	   .wb_inta_o (i2c_intr),
@@ -246,19 +245,15 @@ module user_proj_example #(
 
    // RTC Module Instanciation
 
-  rtcclock rtc_i (
+  rtcdate rtc_date_i (
 	  .i_clk (clk),
+	  .i_ppd (la_data_in[2]),
 	  .i_wb_cyc (wbs_cyc_i),
 	  .i_wb_stb (rtc_wbs_stb_i),
 	  .i_wb_we (wbs_we_i),
-	  .i_wb_addr (wbs_adr_i[2:0]),
 	  .i_wb_data (wbs_dat_i),
-	  .o_data (rtc_wbs_dat_o),
-	  .o_sseg (),
-	  .o_led (),
-	  .o_interrupt (rtc_intr),
-	  .o_ppd (),
-	  .i_hack (la_data_in[2])
+	  .o_wb_ack (rtc_wbs_ack_o),
+	  .o_wb_data (rtc_wbs_dat_o)
   );
 
    // PID Module Instantiation 
