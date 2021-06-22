@@ -34,11 +34,17 @@ set ::env(VERILOG_FILES) "\
         $script_dir/../../verilog/rtl/pid/booth.v \
         $script_dir/../../verilog/rtl/pid/CLA_fixed.v \
         $script_dir/../../verilog/rtl/pid/PID.v \ 
+        $script_dir/../../verilog/rtl/fpu/except.v \
+        $script_dir/../../verilog/rtl/fpu/post_norm.v \
+        $script_dir/../../verilog/rtl/fpu/pre_norm_fmul.v \
+        $script_dir/../../verilog/rtl/fpu/pre_norm.v \
+        $script_dir/../../verilog/rtl/fpu/primitives.v \
+        $script_dir/../../verilog/rtl/fpu/fpu.v \
 	$script_dir/../../verilog/rtl/user_proj_example.v"
 	
 set ::env(CLOCK_PORT) "wb_clk_i"
 set ::env(CLOCK_NET) "wb_clk_i"
-set ::env(CLOCK_PERIOD) "100"
+set ::env(CLOCK_PERIOD) "10"
 
 set ::env(DESIGN_IS_CORE) 0
 set ::env(FP_PDN_CORE_RING) 0
@@ -49,7 +55,7 @@ set ::env(VDD_NETS) [list {vccd1} {vccd2} {vdda1} {vdda2}]
 set ::env(GND_NETS) [list {vssd1} {vssd2} {vssa1} {vssa2}]
 
 set ::env(SYNTH_MAX_FANOUT) 6
-set ::env(FP_CORE_UTIL) 24
+set ::env(FP_CORE_UTIL) 20
 set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+4) / 100.0 ]
 set ::env(CELL_PAD) 4
 
