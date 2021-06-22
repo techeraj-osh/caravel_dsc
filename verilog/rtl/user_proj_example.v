@@ -104,36 +104,37 @@ module user_proj_example #(
     wire capt_in1,capt_in2;
     wire i2c_scl_in, i2c_sda_in, scl_pad_o, scl_padoen_o, sda_pad_o, sda_padoen_o ; 
 
-    assign ptc_clk1 = io_in[0] ;                           // IO[0]
-    assign io_oeb[0]= 1'b1;
+    //io_oeb is active low signal
 
-    assign ptc_clk2 = io_in[1] ;                           // IO[1]
-    assign io_oeb[1]= 1'b1;
+    assign ptc_clk1 = io_in[18] ;                           // IO[18]
+    assign io_oeb[18]= 1'b1;
 
-    assign capt_in1 = io_in[2] ;                           // IO[2]
-    assign io_oeb[1]= 1'b1;
+    assign ptc_clk2 = io_in[19] ;                           // IO[19]
+    assign io_oeb[19]= 1'b1;
 
-    assign capt_in2 = io_in[3] ;                           // IO[3]
-    assign io_oeb[1]= 1'b1;
+    assign capt_in1 = io_in[20] ;                           // IO[20]
+    assign io_oeb[20]= 1'b1;
 
-    
-    assign io_out[5:4] = la_data_in[1:0] ;                 // IO[5:4]
-    assign io_oeb[5:4] = la_oenb[1:0]    ;
+    assign capt_in2 = io_in[21] ;                           // IO[21]
+    assign io_oeb[21]= 1'b1;
 
-    assign io_out[7:6] = {pwm_out2,pwm_out1} ;             // IO[7:6]
-    assign io_oeb[7:6] = {pwm_out2_oen,pwm_out1_oen} ;
+    assign io_out[23:22] = {pwm_out2,pwm_out1} ;             // IO[23:22]
+    assign io_oeb[23:22] = {pwm_out2_oen,pwm_out1_oen} ;
 
-    assign io_out[8] = scl_pad_o ;                         // IO[8]
-    assign io_oeb[8] = scl_padoen_o ;
+    assign io_out[24] = scl_pad_o ;                         // IO[24]
+    assign io_oeb[24] = scl_padoen_o ;
 
-    assign i2c_scl_in = io_in[9] ;                         // IO[9]
-    assign io_oeb[9]= 1'b1;
+    assign i2c_scl_in = io_in[25] ;                         // IO[25]
+    assign io_oeb[25]= 1'b1;
 
-    assign io_out[10] = sda_pad_o ;                        // IO[10]
-    assign io_oeb[10] = sda_padoen_o;
+    assign io_out[26] = sda_pad_o ;                        // IO[26]
+    assign io_oeb[26] = sda_padoen_o;
 
-    assign i2c_sda_in = io_in[11] ;                        // IO[11]
-    assign io_oeb[11]= 1'b1;
+    assign i2c_sda_in = io_in[27] ;                        // IO[27]
+    assign io_oeb[27]= 1'b1;
+
+    assign io_out[29:28] = la_data_in[110:109] ;           // IO[29:28]
+    assign io_oeb[29:28] = la_oenb[110:109]    ;
 
     // Inputs
 
@@ -141,7 +142,6 @@ module user_proj_example #(
     assign irq = {rtc_intr , i2c_intr , {ptc2_intr || ptc1_intr} };	
 
     // LA
-   assign la_data_out = 128'b0;
    assign clk = wb_clk_i ;
    assign rst = wb_rst_i ;
 
@@ -247,7 +247,7 @@ module user_proj_example #(
 
   rtcdate rtc_date_i (
 	  .i_clk (clk),
-	  .i_ppd (la_data_in[2]),
+	  .i_ppd (la_data_in[111]),
 	  .i_wb_cyc (wbs_cyc_i),
 	  .i_wb_stb (rtc_wbs_stb_i),
 	  .i_wb_we (wbs_we_i),
@@ -255,6 +255,7 @@ module user_proj_example #(
 	  .o_wb_ack (rtc_wbs_ack_o),
 	  .o_wb_data (rtc_wbs_dat_o)
   );
+
 
    // PID Module Instantiation 
   PID pid (
@@ -270,6 +271,28 @@ module user_proj_example #(
 	  .o_un (),
 	  .o_valid ()
   ); 
+
+
+
+   // FPU Instanciation
+   fpu fpu_i (
+
+	   .clk 	(clk),
+	   .rmode 	(la_data_in[105:104]), 	// 2-bit
+	   .fpu_op 	(la_data_in[108:106]), 	// 3-bit
+	   .opa 	(la_data_in[31:0]),	// 32-bit
+	   .opb		(la_data_in[63:32]),	// 32-bit
+	   .out		(la_data_in[95:64]), 	// 32-bit
+	   .inf		(la_data_out[96]),
+	   .snan	(la_data_out[97]),
+	   .qnan	(la_data_out[98]),
+	   .ine		(la_data_out[99]),
+	   .overflow	(la_data_out[100]),
+	   .underflow	(la_data_out[101]),
+	   .zero	(la_data_out[102]),
+	   .div_by_zero	(la_data_out[103]),
+
+   );
 
 endmodule
 `default_nettype wire
